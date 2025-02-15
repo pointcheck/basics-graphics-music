@@ -59,6 +59,7 @@ module lab_top
     //------------------------------------------------------------------------
     //
     wire [7:0] duty;
+    reg key_pressed;
 
     servo_pwm i_servo_pwm 
     (
@@ -70,17 +71,24 @@ module lab_top
 
     always @(posedge clk or posedge rst)
 	begin
-		if(rst)
+		if(rst) begin
 			duty <= 8'd128;
+			key_pressed <= '0;
+		end
 		else begin
-			if(key[0])
-				duty <= 8'd0;
+			if(key[0] && key_pressed == '0 && duty < 248)
+				duty <= duty + 8'd8;
 
-			if(key[1])
+			if(key[1] && key_pressed == '0)
 				duty <= 8'd128;
 
-			if(key[2])
-				duty <= 8'd255;
+			if(key[2] && key_pressed == '0 && duty > 7)
+				duty <= duty - 8'd8;
+
+			if(key[0] | key[1] | key[2])
+				key_pressed <= 1'd1;
+			else
+				key_pressed <= 1'd0;
 
 		end
 	end
