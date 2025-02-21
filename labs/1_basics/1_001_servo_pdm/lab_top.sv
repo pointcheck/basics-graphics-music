@@ -61,12 +61,13 @@ module lab_top
     wire [7:0] duty;
     reg key_pressed;
 
-    servo_pwm i_servo_pwm 
+    servo_pdm #( .clk_hz(25000000) ) i_servo_pdm 
     (
-        .clk       ( clk  ),
+        .clk       ( clk     ),
         .rst       ( rst     ),
-        .pwm       ( gpio[0] ),
-        .duty      ( duty )
+        .en        ( 1'b1    ),
+        .pdm       ( gpio[0] ),
+        .duty      ( duty    )
     );
 
     always @(posedge clk or posedge rst)

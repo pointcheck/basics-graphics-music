@@ -1,8 +1,12 @@
-module servo_pwm (
-        input  wire       rst,
-        input  wire       clk,
-	input  reg [7:0]  duty,
-        output reg        pwm
+module servo_pdm
+# (
+	parameter  clk_hz	= 25000000
+) ( 
+        input  wire       rst,	// Global RESET signal
+        input  wire       clk,	// Global Clock
+	input  wire       en,	// Enable signal
+	input  reg [7:0]  duty,	// input Duty cycle value
+        output reg        pdm	// produced PDM signal
 );
         reg     [19:0] count_low;
         reg     [15:0] count_high;
@@ -25,13 +29,13 @@ module servo_pwm (
                         count_high <= '0;
                         state <= '0;
 		end
-		else begin
+	       	else if(en) begin
 			case(state)
 
 				1'b0: begin
                         		count_low <= count_low + 'b1;
 					if(count_low == count_low_top) begin
-						pwm <= 'b1;
+						pdm <= 'b1;
 						count_low <= 0;
 						state <= 'b1;
 					end
@@ -40,7 +44,7 @@ module servo_pwm (
 				1'b1: begin
                         		count_high <= count_high + 'b1;
 					if(count_high == count_high_top) begin
-						pwm <= 'b0;
+						pdm <= 'b0;
 						count_high <= 0;
 						state <= 'b0;
 					end

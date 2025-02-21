@@ -6,5 +6,5 @@ module fulladder1 (
         output wire       c_out,
 );
         assign c_out = (a & b) | (c_in & (a ^ b));
-	assign sum = (c_in ^ (a ^ b));
+        assign sum = (c_in ^ (a ^ b));
 endmodule
